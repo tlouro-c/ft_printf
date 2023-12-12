@@ -6,7 +6,7 @@
 /*   By: tlouro-c <tlouro-c@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/11 22:11:00 by tlouro-c          #+#    #+#             */
-/*   Updated: 2023/12/12 15:29:46 by tlouro-c         ###   ########.fr       */
+/*   Updated: 2023/12/12 18:57:15 by tlouro-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,11 @@ int	apply_x(const char *format, va_list *args, int pos, char specifier)
 	while (format[pos] != '\0' && isflag(format[pos]))
 	{
 		if (format[pos] == '-')
-			flags.hifen = true;
+			flags.hifen = TRUE;
 		if (format[pos] == '0')
-			flags.zero = true;
+			flags.zero = TRUE;
 		if (format[pos] == '#')
-			flags.hash = true;
+			flags.hash = TRUE;
 		pos++;
 	}
 	flags.width = ft_atoi(&format[pos]);
@@ -38,7 +38,7 @@ int	apply_x(const char *format, va_list *args, int pos, char specifier)
 		pos++;
 	if (format[pos] == '.')
 	{
-		flags.precision_on = true;
+		flags.precision_on = TRUE;
 		flags.precision = ft_atoi(&format[++pos]);
 	}
 	return (write_x(flags, n));
@@ -64,7 +64,7 @@ static int	write_x(t_flags_x flags, unsigned long n)
 	}
 	else
 	{
-		if (flags.zero == true)
+		if (flags.zero == TRUE)
 			written += write_c_x_times('0', flags.width - track_flag_usage);
 		else
 			written += write_c_x_times(' ', flags.width - track_flag_usage);
@@ -80,13 +80,13 @@ static int	write_number(unsigned long n, t_flags_x flags)
 
 	written = 0;
 	zeros = flags.precision - hexa_len(n, 16, "0123456789abcdef");
-	if (flags.hash == true && flags.upper_case == false)
+	if (flags.hash == TRUE && flags.upper_case == FALSE && n != 0)
 		written += write(1, "0x", 2);
-	else if (flags.hash == true && flags.upper_case == true)
+	else if (flags.hash == TRUE && flags.upper_case == TRUE && n != 0)
 		written += write(1, "0X", 2);
 	if (flags.precision && zeros > 0)
 		written += write_c_x_times('0', zeros);
-	if (flags.upper_case == false)
+	if (flags.upper_case == FALSE)
 		written += ft_putnbr_bases(n, 16, "0123456789abcdef");
 	else
 		written += ft_putnbr_bases(n, 16, "0123456789ABCDEF");
@@ -96,8 +96,8 @@ static int	write_number(unsigned long n, t_flags_x flags)
 static void	initialize_flags(t_flags_x *flags, char specifier)
 {
 	flags -> precision = 0;
-	flags -> hifen = false;
-	flags -> zero = false;
-	flags -> hash = false;
+	flags -> hifen = FALSE;
+	flags -> zero = FALSE;
+	flags -> hash = FALSE;
 	flags -> upper_case = specifier == 'X';
 }

@@ -6,7 +6,7 @@
 /*   By: tlouro-c <tlouro-c@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 15:34:07 by tlouro-c          #+#    #+#             */
-/*   Updated: 2023/12/12 15:38:28 by tlouro-c         ###   ########.fr       */
+/*   Updated: 2023/12/12 17:30:04 by tlouro-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,4 +55,17 @@ int	ft_abs(int n)
 int	ft_putchar_fd(int c, int fd)
 {
 	return (write(fd, &c, 1));
+}
+
+int	number_len_u(unsigned int number)
+{
+	int	number_len;
+
+	number_len = number == 0;
+	while (number > 0)
+	{
+		number = number / 10;
+		number_len++;
+	}
+	return (number_len);
 }

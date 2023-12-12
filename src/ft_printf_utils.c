@@ -6,7 +6,7 @@
 /*   By: tlouro-c <tlouro-c@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/11 13:57:37 by tlouro-c          #+#    #+#             */
-/*   Updated: 2023/12/12 15:29:48 by tlouro-c         ###   ########.fr       */
+/*   Updated: 2023/12/12 19:19:40 by tlouro-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ void	action(const char *format, va_list *args, t_inc *increment)
 
 	pos = increment -> i + 1;
 	specifier = find_specifier(format, increment);
-	if (specifier == 'c' || specifier == '%')
-		increment -> written += apply_c(format, args, pos, specifier);
+	if (specifier == 'c')
+		increment -> written += apply_c(format, args, pos);
 	else if (specifier == 's')
 	{
 		return_value = apply_s(format, args, pos);
@@ -38,7 +38,7 @@ void	action(const char *format, va_list *args, t_inc *increment)
 	else if (specifier == 'X' || specifier == 'x')
 		increment -> written += apply_x(format, args, pos, specifier);
 	else
-		invalid_specifier(specifier, args);
+		increment -> written += invalid_specifier_or_special(specifier, args);
 }
 
 char	find_specifier(const char *format, t_inc *increment)
@@ -51,7 +51,8 @@ char	find_specifier(const char *format, t_inc *increment)
 	if (format[increment->i] == '.')
 	{
 		increment->i++;
-		while (format[increment->i] != '\0' && ft_isdigit(format[increment->i]))
+		while (format[increment->i] != '\0'
+			&& ft_isdigit(format[increment->i]))
 			increment->i++;
 	}
 	if (format[increment->i] != '\0')

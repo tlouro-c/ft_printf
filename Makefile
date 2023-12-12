@@ -17,11 +17,14 @@ SRC_FILES =  $(SRC_DIR)/apply_c.c \
 			 $(SRC_DIR)/ft_printf_utils.c \
 			 $(SRC_DIR)/ft_printf_utils2.c \
 			 $(SRC_DIR)/ft_printf_utils3.c \
-			 $(SRC_DIR)/ft_printf_utils4.c
+			 $(SRC_DIR)/ft_printf_utils4.c \
+			 $(SRC_DIR)/ft_printf_utils5.c
 
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
 all: $(NAME)
+
+bonus: all
 
 $(NAME): $(OBJ_FILES)
 	ar -rcs $@ $(OBJ_FILES)
@@ -45,5 +48,5 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re bonus
 

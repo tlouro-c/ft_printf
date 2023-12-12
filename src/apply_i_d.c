@@ -6,7 +6,7 @@
 /*   By: tlouro-c <tlouro-c@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 13:56:21 by tlouro-c          #+#    #+#             */
-/*   Updated: 2023/12/12 15:29:39 by tlouro-c         ###   ########.fr       */
+/*   Updated: 2023/12/12 19:08:51 by tlouro-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 static int	write_i_d(t_flags_i_d flags, int n);
 static void	initialize_flags(t_flags_i_d *flags);
 static int	write_number(int n, t_flags_i_d flags, int track_flag_usage);
-static void	putnbr_d_i(long n);
+static int	edge_case_check_and_print(int n, t_flags_i_d flags,
+				int track_flag_usage, int zeros);
 
 int	apply_i_d(const char *format, va_list *args, int pos)
 {
@@ -25,13 +26,13 @@ int	apply_i_d(const char *format, va_list *args, int pos)
 	while (format[pos] != '\0' && isflag(format[pos]))
 	{
 		if (format[pos] == '-')
-			flags.hifen = true;
+			flags.hifen = TRUE;
 		if (format[pos] == '0')
-			flags.zero = true;
+			flags.zero = TRUE;
 		if (format[pos] == '+')
-			flags.plus = true;
+			flags.plus = TRUE;
 		if (format[pos] == ' ')
-			flags.space = true;
+			flags.space = TRUE;
 		pos++;
 	}
 	flags.width = ft_atoi(&format[pos]);
@@ -39,7 +40,7 @@ int	apply_i_d(const char *format, va_list *args, int pos)
 		pos++;
 	if (format[pos] == '.')
 	{
-		flags.precision_on = true;
+		flags.precision_on = TRUE;
 		flags.precision = ft_atoi(&format[++pos]);
 	}
 	return (write_i_d(flags, va_arg(*args, int)));
@@ -52,9 +53,9 @@ static int	write_i_d(t_flags_i_d flags, int n)
 
 	written = 0;
 	track_flag_usage = 0;
-	if (flags.plus || flags.space)
+	if (flags.plus || flags.space || n < 0)
 		track_flag_usage += 1;
-	if (flags.precision > number_len(n))
+	if (flags.precision_on && flags.precision >= number_len(n))
 		track_flag_usage += flags.precision;
 	else
 		track_flag_usage += number_len(n);
@@ -62,6 +63,8 @@ static int	write_i_d(t_flags_i_d flags, int n)
 		written += write(1, "+", 1);
 	else if (flags.space && n >= 0)
 		written += write(1, " ", 1);
+	else if (n < 0 && (flags.width <= track_flag_usage || flags.zero))
+		written += write(1, "-", 1);
 	written += write_number(n, flags, track_flag_usage);
 	return (written);
 }
@@ -77,20 +80,18 @@ static int	write_number(int n, t_flags_i_d flags, int track_flag_usage)
 	{
 		if (flags.precision && zeros > 0)
 			written += write_c_x_times('0', zeros);
-		putnbr_d_i((long)n);
-		written += number_len(n);
-		written += write_c_x_times(' ', flags.width - written);
+		written += edge_case_check_and_print(n, flags, track_flag_usage, zeros);
+		written += write_c_x_times(' ', flags.width - track_flag_usage);
 	}
 	else
 	{
-		if (flags.zero == true && flags.precision_on == false)
+		if (flags.zero == TRUE && flags.precision_on == FALSE)
 			written += write_c_x_times('0', flags.width - track_flag_usage);
 		else
 			written += write_c_x_times(' ', flags.width - track_flag_usage);
 		if (flags.precision && zeros > 0)
 			written += write_c_x_times('0', zeros);
-		putnbr_d_i((long)n);
-		written += number_len(n);
+		written += edge_case_check_and_print(n, flags, track_flag_usage, zeros);
 	}
 	return (written);
 }
@@ -98,25 +99,26 @@ static int	write_number(int n, t_flags_i_d flags, int track_flag_usage)
 static void	initialize_flags(t_flags_i_d *flags)
 {
 	flags -> width = 0;
-	flags -> precision_on = false;
+	flags -> precision_on = FALSE;
 	flags -> precision = 0;
-	flags -> hifen = false;
-	flags -> zero = false;
-	flags -> plus = false;
-	flags -> space = false;
+	flags -> hifen = FALSE;
+	flags -> zero = FALSE;
+	flags -> plus = FALSE;
+	flags -> space = FALSE;
 }
 
-static void	putnbr_d_i(long n)
+static int	edge_case_check_and_print(int n, t_flags_i_d flags,
+				int track_flag_usage, int zeros)
 {
-	char	toprint;
+	int	written;
 
-	if (n < 0)
-	{
-		write(1, "-", 1);
-		n = n * -1;
-	}
-	if (n >= 10)
-		putnbr_d_i(n / 10);
-	toprint = (n % 10) + 48;
-	write(1, &toprint, 1);
+	written = 0;
+	if (flags.precision == 0 && flags.precision_on == TRUE && n == 0)
+		return (write (1, " ", 1));
+	if (flags.width > track_flag_usage && n < 0 && zeros <= 0
+		&& flags.zero == FALSE)
+		written += write (1, "-", 1);
+	putnbr_d_i((long)n);
+	written += number_len(n);
+	return (written);
 }

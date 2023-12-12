@@ -6,13 +6,13 @@
 /*   By: tlouro-c <tlouro-c@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/11 19:52:49 by tlouro-c          #+#    #+#             */
-/*   Updated: 2023/12/12 15:29:50 by tlouro-c         ###   ########.fr       */
+/*   Updated: 2023/12/12 17:27:20 by tlouro-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static void	ft_putnbr_bases_rec(unsigned long n, int base_size, 
+static void	ft_putnbr_bases_rec(unsigned long n, int base_size,
 		char *base, int	*counter)
 {
 	char	toprint;
@@ -37,7 +37,9 @@ int	number_len(int number)
 {
 	int	number_len;
 
-	number_len = number < 0 || number == 0;
+	number_len = number == 0;
+	if (number == INT_MIN)
+		number++;
 	if (number < 0)
 		number = number * -1;
 	while (number > 0)

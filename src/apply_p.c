@@ -6,7 +6,7 @@
 /*   By: tlouro-c <tlouro-c@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/11 19:40:04 by tlouro-c          #+#    #+#             */
-/*   Updated: 2023/12/12 15:29:40 by tlouro-c         ###   ########.fr       */
+/*   Updated: 2023/12/12 16:09:26 by tlouro-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,15 @@ int	apply_p(const char *format, va_list *args, int pos)
 	t_flags_c_p			flags;
 	unsigned long		p;
 
-	flags.hifen = false;
-	flags.zero = false;
+	flags.hifen = FALSE;
+	flags.zero = FALSE;
 	p = (unsigned long)va_arg(*args, void *);
 	while (format[pos] != '\0' && isflag(format[pos]))
 	{
 		if (format[pos] == '-')
-			flags.hifen = true;
+			flags.hifen = TRUE;
 		if (format[pos] == '0')
-			flags.zero = true;
+			flags.zero = TRUE;
 		pos++;
 	}
 	flags.width = ft_atoi(&format[pos]);
@@ -79,7 +79,7 @@ static int	nil(t_flags_c_p flags, char *s)
 	{
 		if (flags.zero)
 			written += write_c_x_times('0', flags.width - ft_strlen(s));
-		else 
+		else
 			written += write_c_x_times(' ', flags.width - ft_strlen(s));
 		written += ft_putstr_fd(s, 1);
 	}
@@ -92,7 +92,7 @@ static int	ox_zero(t_flags_c_p flags, unsigned long p)
 
 	written = 0;
 	written += write (1, "0x", 2);
-	written += write_c_x_times('0', flags.width - (2 
+	written += write_c_x_times('0', flags.width - (2
 				+ hexa_len(p, 16, "0123456789abcdef")));
 	return (written);
 }
@@ -102,7 +102,7 @@ static int	space_ox(t_flags_c_p flags, unsigned long p)
 	int	written;
 
 	written = 0;
-	written += write_c_x_times(' ', flags.width - (2 
+	written += write_c_x_times(' ', flags.width - (2
 				+ hexa_len(p, 16, "0123456789abcdef")));
 	written += write (1, "0x", 2);
 	return (written);

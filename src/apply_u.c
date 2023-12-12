@@ -6,7 +6,7 @@
 /*   By: tlouro-c <tlouro-c@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 14:34:10 by tlouro-c          #+#    #+#             */
-/*   Updated: 2023/12/12 15:29:44 by tlouro-c         ###   ########.fr       */
+/*   Updated: 2023/12/12 16:45:49 by tlouro-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ int	apply_u(const char *format, va_list *args, int pos)
 	while (format[pos] != '\0' && isflag(format[pos]))
 	{
 		if (format[pos] == '-')
-			flags.hifen = true;
+			flags.hifen = TRUE;
 		if (format[pos] == '0')
-			flags.zero = true;
+			flags.zero = TRUE;
 		pos++;
 	}
 	flags.width = ft_atoi(&format[pos]);
@@ -35,7 +35,7 @@ int	apply_u(const char *format, va_list *args, int pos)
 		pos++;
 	if (format[pos] == '.')
 	{
-		flags.precision_on = true;
+		flags.precision_on = TRUE;
 		flags.precision = ft_atoi(&format[++pos]);
 	}
 	return (write_u(flags, (unsigned int)va_arg(*args, int)));
@@ -48,10 +48,10 @@ static int	write_u(t_flags_u flags, unsigned int n)
 
 	written = 0;
 	track_flag_usage = 0;
-	if (flags.precision > number_len(n))
+	if (flags.precision > number_len_u(n))
 		track_flag_usage += flags.precision;
 	else
-		track_flag_usage += number_len(n);
+		track_flag_usage += number_len_u(n);
 	if (flags.hifen)
 	{
 		written += write_number(n, flags);
@@ -59,7 +59,7 @@ static int	write_u(t_flags_u flags, unsigned int n)
 	}
 	else
 	{
-		if (flags.zero == true && flags.precision_on == false)
+		if (flags.zero == TRUE && flags.precision_on == FALSE)
 			written += write_c_x_times('0', flags.width - track_flag_usage);
 		else
 			written += write_c_x_times(' ', flags.width - track_flag_usage);
@@ -74,21 +74,21 @@ static int	write_number(unsigned int n, t_flags_u flags)
 	int	zeros;
 
 	written = 0;
-	zeros = flags.precision - number_len(n);
+	zeros = flags.precision - number_len_u(n);
 	if (flags.precision && zeros > 0)
 		written += write_c_x_times('0', zeros);
 	putnbr_u(n);
-	written += number_len(n);
+	written += number_len_u(n);
 	return (written);
 }
 
 static void	initialize_flags(t_flags_u *flags)
 {
 	flags -> width = 0;
-	flags -> precision_on = false;
+	flags -> precision_on = FALSE;
 	flags -> precision = 0;
-	flags -> hifen = false;
-	flags -> zero = false;
+	flags -> hifen = FALSE;
+	flags -> zero = FALSE;
 }
 
 static void	putnbr_u(unsigned int n)

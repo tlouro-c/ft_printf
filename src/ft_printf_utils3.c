@@ -6,14 +6,16 @@
 /*   By: tlouro-c <tlouro-c@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/11 21:51:15 by tlouro-c          #+#    #+#             */
-/*   Updated: 2023/12/12 15:33:33 by tlouro-c         ###   ########.fr       */
+/*   Updated: 2023/12/12 19:20:58 by tlouro-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	invalid_specifier(char specifier, va_list *args)
+int	invalid_specifier_or_special(char specifier, va_list *args)
 {
+	if (specifier == '%')
+		return (write(1, "%", 1));
 	va_end(*args);
 	ft_putstr_fd("Error: Invalid conversion specifier '", 2);
 	ft_putchar_fd(specifier, 2);

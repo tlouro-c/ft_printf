@@ -6,7 +6,7 @@
 /*   By: tlouro-c <tlouro-c@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/11 16:51:36 by tlouro-c          #+#    #+#             */
-/*   Updated: 2023/12/12 15:29:43 by tlouro-c         ###   ########.fr       */
+/*   Updated: 2023/12/12 19:35:45 by tlouro-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ int	apply_s(const char *format, va_list *args, int pos)
 	while (format[pos] != '\0' && isflag(format[pos]))
 	{
 		if (format[pos] == '-')
-			flags.hifen = true;
+			flags.hifen = TRUE;
 		if (format[pos] == '0')
-			flags.zero = true;
+			flags.zero = TRUE;
 		pos++;
 	}
 	flags.width = ft_atoi(&format[pos]);
@@ -37,8 +37,10 @@ int	apply_s(const char *format, va_list *args, int pos)
 		pos++;
 	if (format[pos] == '.')
 	{
-		flags.precision_on = true;
+		flags.precision_on = TRUE;
 		flags.precision = ft_atoi(&format[++pos]);
+		if ((ft_strcmp(s, "(null)") == 0) && flags.precision <= 5)
+			flags.precision = 0;
 	}
 	return (write_s(flags, s));
 }
@@ -61,9 +63,9 @@ static int	write_s(t_flags_s flags, char *s)
 	}
 	else
 	{
-		if (flags.zero)
+		if (flags.zero && ft_strcmp(s, "(null)") != 0)
 			written += write_c_x_times('0', flags.width - ft_strlen(print));
-		else 
+		else
 			written += write_c_x_times(' ', flags.width - ft_strlen(print));
 		written += ft_putstr_fd(print, 1);
 	}
@@ -75,9 +77,9 @@ static void	initialize_flags(t_flags_s *flags)
 {
 	flags -> width = 0;
 	flags -> precision = INT_MAX;
-	flags -> precision_on = false;
-	flags -> hifen = false;
-	flags -> zero = false;
+	flags -> precision_on = FALSE;
+	flags -> hifen = FALSE;
+	flags -> zero = FALSE;
 }
 
 static void	assign_string(char **s, va_list *args)
