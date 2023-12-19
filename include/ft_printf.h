@@ -71,6 +71,7 @@ typedef struct s_flags_i_d
 	t_bool	zero;
 	t_bool	plus;
 	t_bool	space;
+	t_bool	written_minus;
 }	t_flags_i_d;
 
 typedef struct s_flags_u
@@ -111,6 +112,7 @@ int				ft_abs(int n);
 int				ft_putchar_fd(int c, int fd);
 void			putnbr_d_i(long n);
 int				ft_strcmp(char *s1, char *s2);
+int				quick_edge(int n, t_flags_i_d flags);
 
 //* END OF PRINTF
 

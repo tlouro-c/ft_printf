@@ -18,7 +18,8 @@ SRC_FILES =  $(SRC_DIR)/apply_c.c \
 			 $(SRC_DIR)/ft_printf_utils2.c \
 			 $(SRC_DIR)/ft_printf_utils3.c \
 			 $(SRC_DIR)/ft_printf_utils4.c \
-			 $(SRC_DIR)/ft_printf_utils5.c
+			 $(SRC_DIR)/ft_printf_utils5.c \
+			 $(SRC_DIR)/apply_i_d_edge.c \
 
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
 

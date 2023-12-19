@@ -51,11 +51,12 @@ static int	write_u(t_flags_u flags, unsigned int n)
 	if (flags.precision > number_len_u(n))
 		track_flag_usage += flags.precision;
 	else
-		track_flag_usage += number_len_u(n);
+		track_flag_usage += number_len_u(n) - (n == 0
+				&& flags.precision_on == TRUE && flags.precision == 0);
 	if (flags.hifen)
 	{
 		written += write_number(n, flags);
-		written += write_c_x_times(' ', flags.width - written);
+		written += write_c_x_times(' ', flags.width - track_flag_usage);
 	}
 	else
 	{
@@ -77,8 +78,10 @@ static int	write_number(unsigned int n, t_flags_u flags)
 	zeros = flags.precision - number_len_u(n);
 	if (flags.precision && zeros > 0)
 		written += write_c_x_times('0', zeros);
-	putnbr_u(n);
-	written += number_len_u(n);
+	if (!(n == 0 && flags.precision_on == TRUE && flags.precision == 0))
+		putnbr_u(n);
+	written += number_len_u(n) - (n == 0 && flags.precision_on == TRUE 
+			&& flags.precision == 0);
 	return (written);
 }
 

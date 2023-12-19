@@ -58,13 +58,19 @@ static int	write_i_d(t_flags_i_d flags, int n)
 	if (flags.precision_on && flags.precision >= number_len(n))
 		track_flag_usage += flags.precision;
 	else
-		track_flag_usage += number_len(n);
+		track_flag_usage += number_len(n)
+			- (n == 0 && flags.precision_on == TRUE && flags.precision == 0);
 	if (flags.plus && n >= 0)
 		written += write(1, "+", 1);
 	else if (flags.space && n >= 0)
 		written += write(1, " ", 1);
-	else if (n < 0 && (flags.width <= track_flag_usage || flags.zero))
+	else if (n < 0 && (flags.width <= track_flag_usage
+			|| (flags.zero == TRUE && flags.precision_on == FALSE)
+			|| flags.hifen))
+	{
 		written += write(1, "-", 1);
+		flags.written_minus = TRUE;
+	}
 	written += write_number(n, flags, track_flag_usage);
 	return (written);
 }
@@ -89,6 +95,8 @@ static int	write_number(int n, t_flags_i_d flags, int track_flag_usage)
 			written += write_c_x_times('0', flags.width - track_flag_usage);
 		else
 			written += write_c_x_times(' ', flags.width - track_flag_usage);
+		if (quick_edge(n, flags))
+			written += write(1, "-", 1);
 		if (flags.precision && zeros > 0)
 			written += write_c_x_times('0', zeros);
 		written += edge_case_check_and_print(n, flags, track_flag_usage, zeros);
@@ -98,6 +106,7 @@ static int	write_number(int n, t_flags_i_d flags, int track_flag_usage)
 
 static void	initialize_flags(t_flags_i_d *flags)
 {
+	flags -> written_minus = FALSE;
 	flags -> width = 0;
 	flags -> precision_on = FALSE;
 	flags -> precision = 0;
@@ -114,9 +123,9 @@ static int	edge_case_check_and_print(int n, t_flags_i_d flags,
 
 	written = 0;
 	if (flags.precision == 0 && flags.precision_on == TRUE && n == 0)
-		return (write (1, " ", 1));
+		return (0);
 	if (flags.width > track_flag_usage && n < 0 && zeros <= 0
-		&& flags.zero == FALSE)
+		&& flags.zero == FALSE && flags.written_minus == FALSE)
 		written += write (1, "-", 1);
 	putnbr_d_i((long)n);
 	written += number_len(n);
